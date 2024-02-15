@@ -7,6 +7,7 @@ const input = document.querySelector('.input-js');
 const ul = document.querySelector('.todo-list');
 const LOCAL_TODO = "todo";
 const array = [];
+initList();
 
 
 //створюємо обєкт
@@ -27,6 +28,9 @@ function enterInput(event) {
     }
 }
 
+//обробка кліка
+btn.addEventListener("click", addLi)
+
 
 //додаємо ліжки
 function addLi() {
@@ -46,21 +50,23 @@ function addLi() {
     input.value = "";
 }
 
-//обробка кнопок <li>
-//недороблено
-ul.addEventListener('click', liComplete);
-function liComplete(event) {
-    const itemClass = event.target.classList.value;
-    if (itemClass === 'todo') {
-        event.target.classList.value = 'complete';
-    } else {
-        if (itemClass !== 'btn-update'&& itemClass !=='todo-list') {
-            event.target.classList.value = 'todo';
-        }
+
+//ініціалізація ліста
+function initList() {
+    const data = JSON.parse(localStorage.getItem('LOCAL_TODO'));
+    console.log(data)
+    if (!data) {
+        return;
+    }
+    for (const item of data) {
+    let li = `
+<li id ="${item.id}" class="${item.status}">${item.text}
+<button class="btn-update"></button>
+</li>
+`
+    ul.insertAdjacentHTML("beforeend", li);
     }
 }
-
-
 
 
 
