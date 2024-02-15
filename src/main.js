@@ -31,7 +31,7 @@ function enterInput(event) {
 //обробка кліка
 btn.addEventListener("click", addLi)
 
-
+ 
 //додаємо ліжки
 function addLi() {
     const inputValue = input.value.trim();
