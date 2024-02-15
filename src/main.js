@@ -2,82 +2,71 @@
 import * as basicLightbox from 'basiclightbox';
 import '../node_modules/basiclightbox/dist/basicLightbox.min.css';
 
-const btn = document.querySelector('.btn-add');
+const button = document.querySelector('.btn-add');
 const input = document.querySelector('.input-js');
-const ul = document.querySelector('.todo-list');
+const list = document.querySelector('.todo-list');
 const LOCAL_TODO = "todo";
 const array = [];
 initList();
 
+//подію прив'язав до кнопки
+button.addEventListener('click', addItem);
 
 //створюємо обєкт
-function createObjToDo() {
+function createObjToDo(textDone) {
     return {
         id: Date.now(),
         status: 'todo',
-        text: input.value
+        textDone: textDone
     }
 }
 
 
-//обробка кнопки Ентер
-document.addEventListener("keypress", enterInput);
-function enterInput(event) {
-    if (input.value.trim() !== '' && (event.code === 'Enter'||event.code === 'NumpadEnter')) {
-        addLi();
-    }
+//створюю об'єкт
+function createItem({ id, status, textDone }) {
+    return `<li class="${status} id="${id}">${textDone}
+    <button class="btn-update"></button>
+    </li>`;
 }
 
-//обробка кліка
-btn.addEventListener("click", addLi)
-
- 
-//додаємо ліжки
-function addLi() {
-    const inputValue = input.value.trim();
-    if (inputValue === "") {
-        return alert("Please enter value")
+//додаю об'єкт
+function addItem() {
+    const value = input.value.trim();
+    
+    if (!value) {
+        alert("Please enter input");
+        return;
     }
-    const detailLi = createObjToDo();
-    const li = `
-<li id ="${detailLi.id}" class="${detailLi.status}">${detailLi.text}
-<button class="btn-update"></button>
-</li>
-`
-    array.push(detailLi);
-    ul.insertAdjacentHTML("beforeend", li);
-    localStorage.setItem("LOCAL_TODO", JSON.stringify(array));
     input.value = "";
+
+    const ObjToDo = createObjToDo(value);
+
+    list.insertAdjacentHTML('beforeend', createItem(ObjToDo))
+    const data = JSON.parse(localStorage.getItem(LOCAL_TODO)) || [];
+    data.push(ObjToDo);
+    localStorage.setItem(LOCAL_TODO, JSON.stringify(data))
 }
 
-
-//ініціалізація ліста
+//зберігаємо і друкуємо дані
 function initList() {
-    const data = JSON.parse(localStorage.getItem('LOCAL_TODO'));
-    console.log(data)
+    const data = JSON.parse(localStorage.getItem(LOCAL_TODO));
     if (!data) {
         return;
     }
-    for (const item of data) {
-    let li = `
-<li id ="${item.id}" class="${item.status}">${item.text}
-<button class="btn-update"></button>
-</li>
-`
-    ul.insertAdjacentHTML("beforeend", li);
-    }
+    //вносимо дані
+    list.innerHTML = data.map(createItem).join('');
 }
 
-
-
-
-
-//ти думаєш як відслідкувати кнопки і прокинути на них подію
-
-
-/* instance = basicLightbox.create(
+//madalka
+instance = basicLightbox.create(
     `<div class="modal-container"><button type="button" class="btn-close-modal">X</button><input type="text" class="input-modal"/><button type="button" class="btn-update-modal" id="${e.target.parentNode.id}">Update todo</button></div>`,
     {
     closable: false,
     }
-  ); */
+); 
+  
+//тут міняємо класи todo
+/* list.addEventListener('click', updateItem) */
+
+
+
